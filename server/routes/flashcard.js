@@ -194,3 +194,53 @@ router.delete("/delete/:flashcardId", authMiddleware, async (req, res) => {
     }
 });
 export default router;
+
+/**
+ * GET /api/flashcard/review/random
+ * Fetch a random flashcard of logged-in user
+ */
+router.get("/review/random", authMiddleware, async (req, res) => {
+    try {
+        const flashcards = await Flashcard.find({ user: req.session.userId });
+
+        if (!flashcards || flashcards.length === 0) {
+            return res.status(404).json({ message: "No flashcards found" });
+        }
+
+        // Pick a random flashcard
+        const randomIndex = Math.floor(Math.random() * flashcards.length);
+        const randomFlashcard = flashcards[randomIndex];
+
+        res.status(200).json(randomFlashcard);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+/**
+ * GET /api/flashcard/review/:subjectId
+ * Fetch a random flashcard of logged-in user for a specific subject
+ */
+router.get("/review/:subjectId", authMiddleware, async (req, res) => {
+    try {
+        const { subjectId } = req.params;
+
+        const flashcards = await Flashcard.find({
+            user: req.session.userId,
+            subject: subjectId
+        });
+
+        if (!flashcards || flashcards.length === 0) {
+            return res.status(404).json({ message: "No flashcards found for this subject" });
+        }
+
+        const randomIndex = Math.floor(Math.random() * flashcards.length);
+        const randomFlashcard = flashcards[randomIndex];
+
+        res.status(200).json(randomFlashcard);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
