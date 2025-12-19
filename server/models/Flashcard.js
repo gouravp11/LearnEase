@@ -14,7 +14,7 @@ const flashcardSchema = new mongoose.Schema(
             trim: true
         },
 
-        Subject: {
+        subject: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Subject",
             required: true

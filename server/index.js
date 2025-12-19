@@ -4,6 +4,7 @@ import connectDB from "./db.js";
 import authRoutes from "./routes/auth.js";
 import session from "express-session";
 import subjectRoutes from "./routes/subject.js";
+import flashcardRoutes from "./routes/flashcard.js";
 dotenv.config();
 
 // Connect to database
@@ -31,6 +32,7 @@ app.use(
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/subject", subjectRoutes);
+app.use("/api/flashcard", flashcardRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
