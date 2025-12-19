@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth.js";
 import session from "express-session";
 import subjectRoutes from "./routes/subject.js";
 import flashcardRoutes from "./routes/flashcard.js";
+import cors from "cors";
 dotenv.config();
 
 // Connect to database
@@ -12,6 +13,14 @@ connectDB();
 
 const PORT = process.env.PORT || 3000;
 const app = express();
+
+// CORS middleware
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true
+    })
+);
 
 // Middleware to parse JSON
 app.use(express.json());
