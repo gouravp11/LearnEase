@@ -106,6 +106,9 @@ router.post(
                 });
             }
 
+            // Save user ID in session
+            req.session.userId = user._id;
+
             // Successful login response
             res.status(200).json({
                 message: "Signin successful",
@@ -123,5 +126,12 @@ router.post(
         }
     }
 );
+
+router.post("/logout", (req, res) => {
+    req.session.destroy(() => {
+        res.clearCookie("connect.sid");
+        res.json({ message: "Logged out successfully" });
+    });
+});
 
 export default router;

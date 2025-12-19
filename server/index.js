@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./db.js";
 import authRoutes from "./routes/auth.js";
+import session from "express-session";
 dotenv.config();
 
 // Connect to database
@@ -12,6 +13,19 @@ const app = express();
 
 // Middleware to parse JSON
 app.use(express.json());
+
+// Session middleware (in-memory store)
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || "simple_secret",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
+            httpOnly: true
+        }
+    })
+);
 
 // Routes
 app.use("/api/auth", authRoutes);
