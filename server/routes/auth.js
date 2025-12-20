@@ -134,4 +134,16 @@ router.post("/logout", (req, res) => {
     });
 });
 
+/**
+ * GET /api/auth/me
+ * Checks if user has a valid session
+ */
+router.get("/me", (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ authenticated: false });
+    }
+
+    res.json({ authenticated: true });
+});
+
 export default router;
