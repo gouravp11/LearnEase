@@ -1,57 +1,40 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getSubjects, createSubject, deleteSubject, updateSubject } from "../api/subject";
 import Navbar from "../components/Navbar";
 import SubjectCard from "../components/SubjectCard";
+import { useSubjects } from "../context/SubjectContext";
 
 const Dashboard = () => {
     const navigate = useNavigate();
 
-    const [subjects, setSubjects] = useState([]);
+    const { subjects, addSubject, editSubject, removeSubject, error } = useSubjects();
+
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [editingSubjectId, setEditingSubjectId] = useState(null);
-    const [error, setError] = useState("");
-
-    // Fetch subjects
-    const fetchSubjects = async () => {
-        try {
-            const response = await getSubjects();
-            console.log(response);
-            setSubjects(response.data.subjects);
-        } catch (err) {
-            console.error(err);
-            setError("Failed to fetch subjects");
-        }
-    };
-
-    useEffect(() => {
-        fetchSubjects();
-    }, []);
+    const [localError, setLocalError] = useState("");
 
     // Create or update subject
     const handleSave = async () => {
         if (!title) {
-            setError("Title is required");
+            setLocalError("Title is required");
             return;
         }
 
         try {
             if (editingSubjectId) {
-                await updateSubject(editingSubjectId, { title, description });
+                await editSubject(editingSubjectId, { title, description });
             } else {
-                await createSubject({ title, description });
+                await addSubject({ title, description });
             }
 
             setTitle("");
             setDescription("");
             setEditingSubjectId(null);
-            setError("");
-
-            fetchSubjects();
+            setLocalError("");
         } catch (err) {
             console.error(err);
-            setError("Failed to save subject");
+            setLocalError("Failed to save subject");
         }
     };
 
@@ -67,11 +50,10 @@ const Dashboard = () => {
         if (!window.confirm("Are you sure you want to delete this subject?")) return;
 
         try {
-            await deleteSubject(subjectId);
-            fetchSubjects();
+            await removeSubject(subjectId);
         } catch (err) {
             console.error(err);
-            setError("Failed to delete subject");
+            setLocalError("Failed to delete subject");
         }
     };
 
@@ -80,7 +62,9 @@ const Dashboard = () => {
             <Navbar />
 
             <div className="min-h-screen bg-gray-100 p-6">
-                {error && <div className="text-red-500 mb-4 text-center">{error}</div>}
+                {(error || localError) && (
+                    <div className="text-red-500 mb-4 text-center">{error || localError}</div>
+                )}
 
                 {/* Create / Edit Subject */}
                 <div className="bg-white p-6 rounded-lg shadow-md mb-8 max-w-md mx-auto">

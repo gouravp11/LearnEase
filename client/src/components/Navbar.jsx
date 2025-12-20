@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../api/auth";
-import { getSubjects } from "../api/subject";
 import { getRandomFlashcard, getRandomFlashcardBySubject } from "../api/flashcard";
 import FlashcardModal from "./FlashcardModal";
+import { useSubjects } from "../context/SubjectContext";
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [subjects, setSubjects] = useState([]);
+    const { subjects } = useSubjects();
+
     const [selectedSubject, setSelectedSubject] = useState("all");
     const [flashcard, setFlashcard] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -25,22 +26,6 @@ const Navbar = () => {
             console.error(error);
         }
     };
-
-    const fetchSubjects = async () => {
-        try {
-            const response = await getSubjects();
-            setSubjects(response.data.subjects);
-        } catch (error) {
-            console.error("Failed to fetch subjects", error);
-        }
-    };
-
-    useEffect(() => {
-        // Only fetch subjects if dropdown is visible
-        if (!isSubjectPage) {
-            fetchSubjects();
-        }
-    }, [isSubjectPage]);
 
     const handleFlashRandom = async () => {
         try {
