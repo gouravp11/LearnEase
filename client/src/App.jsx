@@ -3,6 +3,7 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import Subject from "./pages/Subject";
 
 const App = () => {
     return (
@@ -15,6 +16,14 @@ const App = () => {
                     element={
                         <ProtectedRoute>
                             <Dashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/subject/:id"
+                    element={
+                        <ProtectedRoute>
+                            <Subject />
                         </ProtectedRoute>
                     }
                 />
