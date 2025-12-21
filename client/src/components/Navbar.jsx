@@ -41,20 +41,31 @@ const Navbar = () => {
             setLoading(true);
 
             let response;
+            let newCard;
 
-            if (isSubjectPage) {
-                response = await getRandomFlashcardBySubject(subjectId);
-            } else {
-                response = await getRandomFlashcard();
+            for (let i = 0; i < 2; i++) {
+                // max 2 attempts
+                if (isSubjectPage) {
+                    response = await getRandomFlashcardBySubject(subjectId);
+                } else {
+                    response = await getRandomFlashcard();
+                }
+
+                newCard = response.data;
+
+                if (!flashcard || newCard._id !== flashcard._id) {
+                    break;
+                }
             }
-            console.log(response);
-            setFlashcard(response.data);
+
+            setFlashcard(newCard);
         } catch (error) {
             console.error("Failed to fetch random flashcard", error);
         } finally {
             setLoading(false);
         }
     };
+
     useEffect(() => {
         refreshFlashcardState();
     }, []);
@@ -101,7 +112,10 @@ const Navbar = () => {
             </nav>
             {/* Flashcard Modal */}
             {flashcard && (
-                <FlashcardModal flashcard={flashcard} onClose={() => setFlashcard(null)} />
+                <FlashcardModal
+                    flashcard={flashcard}
+                    onClose={() => setFlashcard(null)}
+                />
             )}
         </>
     );
