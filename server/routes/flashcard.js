@@ -55,6 +55,31 @@ router.post(
 );
 
 /**
+ * GET /api/flashcard/exists
+ * Checks for the existence of at least one flashcard for the authenticated user.
+ */
+router.get("/exists", authMiddleware, async (req, res) => {
+    try {
+        const { subjectId } = req.query;
+
+        const filter = {
+            user: req.session.userId
+        };
+
+        if (subjectId) {
+            filter.subject = subjectId;
+        }
+
+        const exists = await Flashcard.exists(filter);
+
+        res.json({ exists: !!exists });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+/**
  * GET /api/flashcards/:subjectId
  * Get all flashcards under a subject
  */
