@@ -65,54 +65,64 @@ const Dashboard = () => {
         <>
             <Navbar />
 
-            <div className="min-h-screen bg-gray-100 p-6">
-                {(error || localError) && (
-                    <div className="text-red-500 mb-4 text-center">{error || localError}</div>
-                )}
+            <div className="min-h-screen bg-[#030712] p-4">
+                <div className="max-w-6xl mx-auto">
+                    {(error || localError) && (
+                        <div className="text-red-500 mb-4 text-center">{error || localError}</div>
+                    )}
 
-                {/* Create / Edit Subject */}
-                <div className="bg-white p-6 rounded-lg shadow-md mb-8 max-w-md mx-auto">
-                    <h2 className="text-xl font-semibold mb-4">
-                        {editingSubjectId ? "Edit Subject" : "Create New Subject"}
-                    </h2>
+                    {/* Create / Edit Subject */}
+                    <div className="bg-[#10141e] p-4 rounded-lg shadow-md mb-8 max-w-sm mx-auto border border-gray-700">
+                        <h2 className="text-xl font-semibold mb-4 text-center text-gray-200">
+                            {editingSubjectId ? "Edit Subject" : "Create New Subject"}
+                        </h2>
 
-                    <input
-                        type="text"
-                        placeholder="Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="w-full mb-2 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    <input
-                        type="text"
-                        placeholder="Description (optional)"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        className="w-full mb-4 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    <button
-                        onClick={handleSave}
-                        className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
-                    >
-                        {editingSubjectId ? "Update Subject" : "Create Subject"}
-                    </button>
-                </div>
-
-                {/* Subjects List */}
-                <h1 className="text-3xl font-bold mb-6 text-center">Your Subjects</h1>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {subjects.map((subject) => (
-                        <SubjectCard
-                            key={subject._id}
-                            subject={subject}
-                            onView={(id) => navigate(`/subject/${id}`)}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
+                        <input
+                            type="text"
+                            placeholder="Title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="w-full mb-2 px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent transition text-white placeholder-gray-500"
                         />
-                    ))}
+
+                        <input
+                            type="text"
+                            placeholder="Description (optional)"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="w-full mb-4 px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent transition text-white placeholder-gray-500"
+                        />
+
+                        <button
+                            onClick={handleSave}
+                            className="w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800 transition font-medium"
+                        >
+                            {editingSubjectId ? "Update Subject" : "Create Subject"}
+                        </button>
+                    </div>
+
+                    {/* Subjects List */}
+                    <h1 className="text-3xl font-bold mb-8 text-center text-gray-200">
+                        Your Subjects
+                    </h1>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {subjects.length === 0 ? (
+                            <p className="text-center text-gray-400 text-base italic col-span-full">
+                                You currently have no subjects
+                            </p>
+                        ) : (
+                            subjects.map((subject) => (
+                                <SubjectCard
+                                    key={subject._id}
+                                    subject={subject}
+                                    onView={(id) => navigate(`/subject/${id}`)}
+                                    onEdit={handleEdit}
+                                    onDelete={handleDelete}
+                                />
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
         </>

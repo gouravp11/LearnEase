@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../api/auth";
-import {
-    getRandomFlashcard,
-    getRandomFlashcardBySubject
-} from "../api/flashcard";
+import { getRandomFlashcard, getRandomFlashcardBySubject } from "../api/flashcard";
 import FlashcardModal from "./FlashcardModal";
 import { useFlashcards } from "../context/flashcardContext";
 
