@@ -6,17 +6,31 @@ import {
     createFlashcard,
     getFlashcardsBySubject,
     updateFlashcard,
-    deleteFlashcard
+    deleteFlashcard,
+    checkFlashcardExists
 } from "../api/flashcard";
+import { useFlashcards } from "../context/flashcardContext";
 
 const Subject = () => {
     const { id: subjectId } = useParams();
+
+    const { setHasFlashcards } = useFlashcards();
 
     const [flashcards, setFlashcards] = useState([]);
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
     const [editingFlashcardId, setEditingFlashcardId] = useState(null);
     const [error, setError] = useState("");
+
+    // After creating/deleting a flashcard
+    const refreshFlashcardState = async () => {
+        try {
+            const res = await checkFlashcardExists(subjectId); // or global if dashboard
+            setHasFlashcards(res.data.exists);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     // Fetch flashcards for this subject
     const fetchFlashcards = async () => {
@@ -49,6 +63,7 @@ const Subject = () => {
                     answer,
                     subjectId
                 });
+                refreshFlashcardState();
             }
 
             setQuestion("");
@@ -76,6 +91,7 @@ const Subject = () => {
 
         try {
             await deleteFlashcard(flashcardId);
+            refreshFlashcardState();
             fetchFlashcards();
         } catch (err) {
             console.error(err);

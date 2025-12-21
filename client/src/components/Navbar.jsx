@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../api/auth";
 import {
     getRandomFlashcard,
-    getRandomFlashcardBySubject,
-    checkFlashcardExists
+    getRandomFlashcardBySubject
 } from "../api/flashcard";
 import FlashcardModal from "./FlashcardModal";
+import { useFlashcards } from "../context/flashcardContext";
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // const [selectedSubject, setSelectedSubject] = useState("all");
+    const { hasFlashcards } = useFlashcards();
+
     const [flashcard, setFlashcard] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [hasFlashcards, setHasFlashcards] = useState(false);
 
     const isSubjectPage = location.pathname.startsWith("/subject/");
     const subjectId = isSubjectPage ? location.pathname.split("/")[2] : null;
@@ -28,24 +28,6 @@ const Navbar = () => {
             console.error(error);
         }
     };
-
-    // Check if flashcards exist (global or per subject)
-    const checkExists = async () => {
-        try {
-            const res = isSubjectPage
-                ? await checkFlashcardExists(subjectId)
-                : await checkFlashcardExists();
-
-            setHasFlashcards(res.data.exists);
-        } catch (err) {
-            console.error("Failed to check flashcard existence", err);
-            setHasFlashcards(false);
-        }
-    };
-
-    useEffect(() => {
-        checkExists();
-    }, [isSubjectPage, subjectId]);
 
     const handleFlashRandom = async () => {
         try {
