@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../api/auth";
-import { getRandomFlashcard, getRandomFlashcardBySubject } from "../api/flashcard";
+import { getRandomFlashcard, getRandomFlashcardBySubject, checkFlashcardExists } from "../api/flashcard";
 import FlashcardModal from "./FlashcardModal";
 import { useSubjects } from "../context/SubjectContext";
 
@@ -14,6 +14,7 @@ const Navbar = () => {
     const [selectedSubject, setSelectedSubject] = useState("all");
     const [flashcard, setFlashcard] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [hasFlashcards, setHasFlashcards] = useState(false);
 
     const isSubjectPage = location.pathname.startsWith("/subject/");
     const subjectId = isSubjectPage ? location.pathname.split("/")[2] : null;
@@ -26,6 +27,24 @@ const Navbar = () => {
             console.error(error);
         }
     };
+
+    // Check if flashcards exist (global or per subject)
+    const checkExists = async () => {
+        try {
+            const res = isSubjectPage
+                ? await checkFlashcardExists(subjectId)
+                : await checkFlashcardExists();
+
+            setHasFlashcards(res.data.exists);
+        } catch (err) {
+            console.error("Failed to check flashcard existence", err);
+            setHasFlashcards(false);
+        }
+    };
+
+    useEffect(() => {
+        checkExists();
+    }, [isSubjectPage, subjectId]);
 
     const handleFlashRandom = async () => {
         try {
@@ -59,7 +78,7 @@ const Navbar = () => {
 
                 {/* Center Controls */}
                 <div className="flex items-center gap-3">
-                    {!isSubjectPage && (
+                    {!isSubjectPage && hasFlashcards && (
                         <select
                             value={selectedSubject}
                             onChange={(e) => setSelectedSubject(e.target.value)}
@@ -74,13 +93,15 @@ const Navbar = () => {
                         </select>
                     )}
 
-                    <button
-                        onClick={handleFlashRandom}
-                        disabled={loading}
-                        className="bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
-                    >
-                        {loading ? "Loading..." : "Flash a Random Card"}
-                    </button>
+                    {hasFlashcards && (
+                        <button
+                            onClick={handleFlashRandom}
+                            disabled={loading}
+                            className="bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
+                        >
+                            {loading ? "Loading..." : "Flash a Random Card"}
+                        </button>
+                    )}
                 </div>
 
                 {/* Actions */}
