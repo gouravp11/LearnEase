@@ -1,9 +1,22 @@
 import { createContext, useContext, useState } from "react";
 import { getSubjects, createSubject, updateSubject, deleteSubject } from "../api/subject";
+import { checkFlashcardExists } from "../api/flashcard";
+import { useFlashcards } from "./flashcardContext";
 
 const SubjectContext = createContext();
 
 export const SubjectProvider = ({ children }) => {
+    const { setHasFlashcards } = useFlashcards();
+    // After creating/deleting a subject check whether flashcards exist
+    const refreshFlashcardState = async () => {
+        try {
+            const res = await checkFlashcardExists(); // or global if dashboard
+            setHasFlashcards(res.data.exists);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     const [subjects, setSubjects] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -33,6 +46,7 @@ export const SubjectProvider = ({ children }) => {
 
     const removeSubject = async (id) => {
         await deleteSubject(id);
+        refreshFlashcardState();
         fetchSubjects();
     };
 
