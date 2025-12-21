@@ -102,14 +102,14 @@ const Dashboard = () => {
                     </div>
 
                     {/* Subjects List */}
-                    <h1 className="text-3xl font-bold mb-8 text-center text-gray-200">
+                    <h1 className="text-3xl font-bold mb-8 text-gray-200 underline">
                         Your Subjects
                     </h1>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {subjects.length === 0 ? (
-                            <p className="text-center text-gray-400 text-base italic col-span-full">
-                                You currently have no subjects
+                            <p className="text-gray-400 text-base italic col-span-full">
+                                No subjects yet
                             </p>
                         ) : (
                             subjects.map((subject) => (
