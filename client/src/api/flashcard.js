@@ -8,3 +8,9 @@ export const updateFlashcard = (flashcardId, data) =>
 export const deleteFlashcard = (flashcardId) => api.delete(`/flashcard/delete/${flashcardId}`);
 export const getRandomFlashcard = () => api.get("/flashcard/review/random");
 export const getRandomFlashcardBySubject = (subjectId) => api.get(`/flashcard/review/${subjectId}`);
+export const checkFlashcardExists = (subjectId) => {
+    if (subjectId) {
+        return api.get(`/flashcard/exists?subjectId=${subjectId}`);
+    }
+    return api.get("/flashcard/exists");
+};
