@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../api/auth";
-import { getRandomFlashcard, getRandomFlashcardBySubject, checkFlashcardExists } from "../api/flashcard";
+import {
+    getRandomFlashcard,
+    getRandomFlashcardBySubject,
+    checkFlashcardExists
+} from "../api/flashcard";
 import FlashcardModal from "./FlashcardModal";
-import { useSubjects } from "../context/SubjectContext";
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { subjects } = useSubjects();
-
-    const [selectedSubject, setSelectedSubject] = useState("all");
+    // const [selectedSubject, setSelectedSubject] = useState("all");
     const [flashcard, setFlashcard] = useState(null);
     const [loading, setLoading] = useState(false);
     const [hasFlashcards, setHasFlashcards] = useState(false);
@@ -54,10 +55,8 @@ const Navbar = () => {
 
             if (isSubjectPage) {
                 response = await getRandomFlashcardBySubject(subjectId);
-            } else if (selectedSubject === "all") {
-                response = await getRandomFlashcard();
             } else {
-                response = await getRandomFlashcardBySubject(selectedSubject);
+                response = await getRandomFlashcard();
             }
             console.log(response);
             setFlashcard(response.data);
@@ -78,21 +77,6 @@ const Navbar = () => {
 
                 {/* Center Controls */}
                 <div className="flex items-center gap-3">
-                    {!isSubjectPage && hasFlashcards && (
-                        <select
-                            value={selectedSubject}
-                            onChange={(e) => setSelectedSubject(e.target.value)}
-                            className="px-3 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="all">All</option>
-                            {subjects.map((subject) => (
-                                <option key={subject._id} value={subject._id}>
-                                    {subject.title}
-                                </option>
-                            ))}
-                        </select>
-                    )}
-
                     {hasFlashcards && (
                         <button
                             onClick={handleFlashRandom}
