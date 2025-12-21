@@ -48,9 +48,12 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="sticky top-0 bg-white shadow-md px-6 py-4 flex justify-between items-center">
+            <nav className="sticky top-0 bg-[#030712] shadow-md px-6 py-4 flex justify-between items-center">
                 {/* Logo / App Name */}
-                <h1 className="text-xl font-semibold cursor-pointer" onClick={() => navigate("/")}>
+                <h1
+                    className="text-xl font-semibold cursor-pointer text-gray-200"
+                    onClick={() => navigate("/")}
+                >
                     LearnEase
                 </h1>
 
@@ -60,7 +63,7 @@ const Navbar = () => {
                         <button
                             onClick={handleFlashRandom}
                             disabled={loading}
-                            className="bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
+                            className="bg-gray-700 text-white px-4 py-1 rounded-lg hover:bg-gray-800 transition disabled:opacity-50"
                         >
                             {loading ? "Loading..." : "Flash a Random Card"}
                         </button>
@@ -71,14 +74,14 @@ const Navbar = () => {
                 <div className="flex gap-4">
                     <button
                         onClick={() => navigate("/")}
-                        className="text-gray-700 hover:text-blue-500 transition"
+                        className="text-gray-300 hover:text-gray-100 transition"
                     >
                         Dashboard
                     </button>
 
                     <button
                         onClick={handleLogout}
-                        className="bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600 transition"
+                        className="bg-gray-700 text-white px-4 py-1 rounded-lg hover:bg-gray-800 transition"
                     >
                         Signout
                     </button>
