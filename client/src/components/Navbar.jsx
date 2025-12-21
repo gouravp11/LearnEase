@@ -115,6 +115,7 @@ const Navbar = () => {
                 <FlashcardModal
                     flashcard={flashcard}
                     onClose={() => setFlashcard(null)}
+                    onFlashMore={handleFlashRandom}
                 />
             )}
         </>
