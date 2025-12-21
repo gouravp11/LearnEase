@@ -1,15 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../api/auth";
 import { getRandomFlashcard, getRandomFlashcardBySubject } from "../api/flashcard";
 import FlashcardModal from "./FlashcardModal";
 import { useFlashcards } from "../context/flashcardContext";
+import { checkFlashcardExists } from "../api/flashcard";
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { hasFlashcards } = useFlashcards();
+    const { hasFlashcards, setHasFlashcards } = useFlashcards();
+
+    const refreshFlashcardState = async () => {
+        try {
+            const res = await checkFlashcardExists(); // or global if dashboard
+            setHasFlashcards(res.data.exists);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const [flashcard, setFlashcard] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -45,7 +55,9 @@ const Navbar = () => {
             setLoading(false);
         }
     };
-
+    useEffect(() => {
+        refreshFlashcardState();
+    }, []);
     return (
         <>
             <nav className="sticky top-0 bg-[#030712] shadow-md px-6 py-4 flex justify-between items-center">
