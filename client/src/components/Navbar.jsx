@@ -71,7 +71,7 @@ const Navbar = () => {
     }, []);
     return (
         <>
-            <nav className="sticky top-0 bg-[#030712] shadow-md px-6 py-4 flex justify-between items-center">
+            <nav className="sticky top-0 bg-[#030712] shadow-2xl shadow-slate-900 px-6 py-4 flex justify-between items-center">
                 {/* Logo / App Name */}
                 <h1
                     className="text-xl font-semibold cursor-pointer text-gray-200"
