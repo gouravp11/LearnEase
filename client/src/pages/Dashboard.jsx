@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import SubjectCard from "../components/SubjectCard";
@@ -7,7 +7,8 @@ import { useSubjects } from "../context/SubjectContext";
 const Dashboard = () => {
     const navigate = useNavigate();
 
-    const { subjects, addSubject, editSubject, removeSubject, error } = useSubjects();
+    const { subjects, fetchSubjects, addSubject, editSubject, removeSubject, error } =
+        useSubjects();
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -57,6 +58,9 @@ const Dashboard = () => {
         }
     };
 
+    useEffect(() => {
+        fetchSubjects();
+    }, []);
     return (
         <>
             <Navbar />

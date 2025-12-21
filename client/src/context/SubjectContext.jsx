@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { getSubjects, createSubject, updateSubject, deleteSubject } from "../api/subject";
 
 const SubjectContext = createContext();
@@ -36,16 +36,13 @@ export const SubjectProvider = ({ children }) => {
         fetchSubjects();
     };
 
-    useEffect(() => {
-        fetchSubjects();
-    }, []);
-
     return (
         <SubjectContext.Provider
             value={{
                 subjects,
                 loading,
                 error,
+                fetchSubjects,
                 addSubject,
                 editSubject,
                 removeSubject
