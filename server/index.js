@@ -28,7 +28,7 @@ app.use(express.json());
 // Session middleware (in-memory store)
 app.use(
     session({
-        secret: process.env.SESSION_SECRET || "simple_secret",
+        secret: process.env.SESSION_SECRET || "top_secret",
         resave: false,
         saveUninitialized: false,
         cookie: {
