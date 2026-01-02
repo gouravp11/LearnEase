@@ -44,6 +44,7 @@ const Subject = () => {
     };
 
     useEffect(() => {
+        refreshFlashcardState();
         fetchFlashcards();
     }, [subjectId]);
 
