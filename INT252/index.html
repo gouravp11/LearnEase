@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="number" id="reg" name="reg" placeholder="enter your reg no." />
+    <input type="text" id="name" name="name" placeholder="enter your name" />
+    <input type="number" id="age" name="age" placeholder="enter your age" />
+    <button id="submit">Submit</button>
+
+    <div class="container">
+      <table>
+        <tr>
+          <th>Reg. No.</th>
+          <th>Name</th>
+          <th>Age</th>
+        </tr>
+      </table>
+    </div>
+    <script>
+        const detailsArr = [];
+        const table = document.querySelector(".container table");
+
+        document.getElementById("submit").addEventListener("click", () => {
+        const reg = document.getElementById("reg");
+        const name = document.getElementById("name");
+        const age = document.getElementById("age");
+        const details = {
+          name: name.value,
+          age: age.value,
+          reg: reg.value,
+        };
+        detailsArr.push(details);
+        reg.value = "";
+        name.value = "";
+        age.value = "";
+
+        const prevDetailsRows = table.innerHTML;
+        const newDetailsRow = `<tr>
+          <td>${details.reg}</td>
+          <td>${details.name}</td>
+          <td>${details.age}</td>
+        </tr>`;
+        table.innerHTML = prevDetailsRows + newDetailsRow;
+      });
+
+    </script>
+  </body>
+</html>
