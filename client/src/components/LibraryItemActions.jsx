@@ -1,0 +1,168 @@
+import { useEffect, useRef, useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { Icon } from "./Icon.jsx";
+import { Button, Field } from "./ui.jsx";
+
+export default function LibraryItemActions({ item, onEdit, onDelete }) {
+    const menuRef = useRef(null);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [dialog, setDialog] = useState(null);
+    const [title, setTitle] = useState(item.title);
+    const [source, setSource] = useState(item.source);
+
+    useEffect(() => {
+        setTitle(item.title);
+        setSource(item.source);
+    }, [item]);
+
+    useEffect(() => {
+        if (!menuOpen) return undefined;
+        const closeMenu = (event) => {
+            if (event.type === "keydown" && event.key !== "Escape") return;
+            if (event.type === "pointerdown" && menuRef.current?.contains(event.target)) return;
+            setMenuOpen(false);
+        };
+        document.addEventListener("pointerdown", closeMenu);
+        document.addEventListener("keydown", closeMenu);
+        return () => {
+            document.removeEventListener("pointerdown", closeMenu);
+            document.removeEventListener("keydown", closeMenu);
+        };
+    }, [menuOpen]);
+
+    const save = (event) => {
+        event.preventDefault();
+        onEdit({ ...item, title: title.trim(), source: source.trim() });
+        setDialog(null);
+    };
+
+    return (
+        <>
+            <div ref={menuRef} className="relative z-10 shrink-0">
+                <button
+                    type="button"
+                    aria-label={`Actions for ${item.title}`}
+                    aria-haspopup="menu"
+                    aria-expanded={menuOpen}
+                    onClick={() => setMenuOpen((open) => !open)}
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-mut hover:bg-tag md:h-10 md:w-10"
+                >
+                    <Icon name="dots" size={18} />
+                </button>
+                {menuOpen && (
+                    <div
+                        role="menu"
+                        className="absolute right-0 top-full z-20 mt-1 min-w-32 rounded-md border border-edge bg-card p-1 shadow-paper"
+                    >
+                        <button
+                            type="button"
+                            role="menuitem"
+                            onClick={() => {
+                                setMenuOpen(false);
+                                setDialog("edit");
+                            }}
+                            className="w-full rounded px-3 py-2 text-left text-sm hover:bg-tag"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            type="button"
+                            role="menuitem"
+                            onClick={() => {
+                                setMenuOpen(false);
+                                setDialog("delete");
+                            }}
+                            className="w-full rounded px-3 py-2 text-left text-sm text-mut hover:bg-tag"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            <Dialog.Root
+                open={!!dialog}
+                onOpenChange={(open) => {
+                    if (!open) setDialog(null);
+                }}
+            >
+                <Dialog.Portal>
+                    <Dialog.Overlay className="fixed inset-0 z-40 bg-overlay" />
+                    <Dialog.Content
+                        aria-describedby={undefined}
+                        className="fixed inset-x-0 bottom-0 z-50 flex max-h-[90dvh] flex-col gap-5 overflow-y-auto rounded-t-3xl border border-edge bg-card pb-7 pl-6 pr-6 pt-3.5 shadow-paper md:inset-auto md:left-1/2 md:top-1/2 md:max-h-[85vh] md:w-[520px] md:-translate-x-1/2 md:-translate-y-1/2 md:gap-[22px] md:overflow-visible md:rounded-md md:py-9 md:pl-16 md:pr-10"
+                    >
+                        <span
+                            aria-hidden="true"
+                            className="mx-auto h-1 w-10 shrink-0 rounded-sm bg-edge md:hidden"
+                        />
+                        {dialog === "edit" ? (
+                            <>
+                                <Dialog.Title className="font-display text-[26px] md:text-[28px]">
+                                    Edit content
+                                </Dialog.Title>
+                                <form onSubmit={save} className="flex flex-col gap-5">
+                                    <Field
+                                        label="title"
+                                        value={title}
+                                        onChange={(event) => setTitle(event.target.value)}
+                                        required
+                                    />
+                                    <Field
+                                        label="source"
+                                        value={source}
+                                        onChange={(event) => setSource(event.target.value)}
+                                        required
+                                    />
+                                    <div className="flex gap-3 md:justify-end">
+                                        <Button
+                                            type="button"
+                                            onClick={() => setDialog(null)}
+                                            className="flex-1 md:flex-none"
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            variant="primary"
+                                            disabled={!title.trim() || !source.trim()}
+                                            className="flex-1 md:flex-none"
+                                        >
+                                            Save changes
+                                        </Button>
+                                    </div>
+                                </form>
+                            </>
+                        ) : (
+                            <>
+                                <Dialog.Title className="font-display text-[26px] md:text-[28px]">
+                                    Delete content?
+                                </Dialog.Title>
+                                <Dialog.Description className="text-sm text-mut">
+                                    This will remove “{item.title}” from your library.
+                                </Dialog.Description>
+                                <div className="flex gap-3 md:justify-end">
+                                    <Button
+                                        onClick={() => setDialog(null)}
+                                        className="flex-1 md:flex-none"
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        onClick={() => {
+                                            onDelete(item);
+                                            setDialog(null);
+                                        }}
+                                        className="flex-1 !border-danger !text-danger md:flex-none"
+                                    >
+                                        Delete
+                                    </Button>
+                                </div>
+                            </>
+                        )}
+                    </Dialog.Content>
+                </Dialog.Portal>
+            </Dialog.Root>
+        </>
+    );
+}

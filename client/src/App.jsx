@@ -1,35 +1,26 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Signin from "./pages/Signin";
-import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import Subject from "./pages/Subject";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { AddContentProvider } from "./context/AddContentContext.jsx";
+import { AddContentDialog } from "./components/AddContentDialog.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Library from "./pages/Library.jsx";
+import Auth from "./pages/Auth.jsx";
+import { SubjectsProvider } from "./context/SubjectsContext.jsx";
+import CreateSubjectDialog from "./components/CreateSubjectDialog.jsx";
 
-const App = () => {
+export default function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/signin" element={<Signin />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route
-                    path="/"
-                    element={
-                        <ProtectedRoute>
-                            <Dashboard />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/subject/:id"
-                    element={
-                        <ProtectedRoute>
-                            <Subject />
-                        </ProtectedRoute>
-                    }
-                />
-            </Routes>
-        </Router>
+        <SubjectsProvider>
+            <AddContentProvider>
+                <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/library" element={<Library />} />
+                    <Route path="/login" element={<Auth mode="login" />} />
+                    <Route path="/signup" element={<Auth mode="signup" />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+                <CreateSubjectDialog />
+                <AddContentDialog />
+            </AddContentProvider>
+        </SubjectsProvider>
     );
-};
-
-export default App;
+}

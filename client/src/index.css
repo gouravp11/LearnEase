@@ -1,1 +1,100 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- Design tokens (match the Figma "Notebook Light / Dark" variable collections) ---- */
+:root {
+    color-scheme: light;
+    --bg: #faf6ec;
+    --rule: #e6e0ce;
+    --marg: #e39a94;
+    --ink: #26231d;
+    --mut: #6b665a;
+    --card: #ffffff;
+    --cardline: #e4eaf5;
+    --border: #ddd6c1;
+    --tag: #e5ecfa;
+    --tagtext: #2f4b8f;
+    --hl: #ffe27a;
+    --hltext: #26231d;
+    --primary: #26231d;
+    --onprimary: #faf6ec;
+    --accent: #2f4b8f;
+    --note1: #fff1b0;
+    --note2: #d9ecff;
+    --note3: #ffe0dc;
+    --notetext: #26231d;
+    --overlay: rgba(38, 35, 29, 0.4);
+    --danger: #b42318;
+}
+[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #14171f;
+    --rule: #222737;
+    --marg: #7a4a4a;
+    --ink: #ece8dc;
+    --mut: #a39f92;
+    --card: #1d2230;
+    --cardline: #2a3145;
+    --border: #343c52;
+    --tag: #2a3350;
+    --tagtext: #c7d0ff;
+    --hl: #5a4e1e;
+    --hltext: #ffe9a0;
+    --primary: #ece8dc;
+    --onprimary: #14171f;
+    --accent: #a9b8ff;
+    --note1: #3a3520;
+    --note2: #1f2e45;
+    --note3: #43292b;
+    --notetext: #ece8dc;
+    --overlay: rgba(5, 7, 12, 0.6);
+    --danger: #ff9e94;
+}
+
+@layer base {
+    html {
+        line-height: normal;
+    }
+    body {
+        @apply bg-bg font-sans text-ink antialiased;
+    }
+    button,
+    input,
+    select,
+    textarea {
+        font: inherit;
+        color: inherit;
+    }
+    :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+    }
+}
+
+/* ---- Notebook details that Tailwind utilities don't express well ---- */
+/* Ruled paper: a 1px line every 32px (first line at y = 31). */
+.paper {
+    background-color: var(--bg);
+    background-image: repeating-linear-gradient(transparent 0 31px, var(--rule) 31px 32px);
+}
+/* Index card: ruled lines every 36px starting 20px from the top. */
+.ruled-card {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+.ruled-card::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 20px 0 0 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(transparent 0 35px, var(--cardline) 35px 36px);
+}
+.no-scrollbar {
+    scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
